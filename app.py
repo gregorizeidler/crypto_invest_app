@@ -25,7 +25,11 @@ symbol = crypto_symbols[crypto]
 period = st.radio("Select period for analysis:", ["1mo", "3mo", "6mo", "1y", "5y"])
 
 # Downloading Yahoo Finance data
-data = yf.download(symbol, period=period)
+try:
+    data = yf.download(symbol, period=period, multi_level_index=False)
+except Exception as e:
+    st.error(f"Error downloading data for {symbol}: {e}")
+    st.stop()
 data = data.reset_index()
 data.columns = data.columns.get_level_values(0)
 data.rename(columns={"index": 'Date'}, inplace=True)
